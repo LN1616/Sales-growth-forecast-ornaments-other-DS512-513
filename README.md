@@ -1,1 +1,233 @@
 # Sales-growth-forecast-ornaments-other-DS512-513
+# Sales Growth Forecast for Ornaments & Other Categories in 2026
+โครงการคาดการณ์ยอดขายและวิเคราะห์ปัจจัยที่มีผลต่อยอดขายของหมวด Ornaments และ Other เพื่อสนับสนุนการวางแผนเชิงกลยุทธ์ด้วยวิธีการทาง Data Analytics และ Predictive Modeling
+
+---
+
+## 1. บทนำและความเป็นมา (Introduction & Background)
+
+ธุรกิจอีคอมเมิร์ซในปัจจุบันมีการแข่งขันสูงและต้องอาศัยข้อมูลเชิงลึกในการตัดสินใจ โดยเฉพาะในหมวดสินค้า Ornaments และ Other
+ซึ่งมีความผันผวนของยอดขายอันเนื่องมาจากฤดูกาล พฤติกรรมผู้บริโภค และปัจจัยด้านราคา
+
+แม้ยอดขายรวมจะอยู่ในระดับที่ดี แต่ยังพบความไม่เสถียรของกำไร ทำให้จำเป็นต้องพัฒนาโมเดลพยากรณ์ยอดขาย เพื่อใช้วางแผนด้านสต๊อก โปรโมชั่น และกลยุทธ์ราคาในปี 2026
+
+---
+
+## 2. วัตถุประสงค์ของโครงการ (Research Objectives)
+
+- พัฒนาโมเดลพยากรณ์ยอดขายรายเดือนสำหรับปี 2026 ในหมวด Ornaments และ Other  
+- วิเคราะห์ตัวแปรทางธุรกิจที่ส่งผลต่อยอดขาย เช่น อายุผู้ซื้อ ค่าจัดส่ง จำนวนสินค้า และเรตติ้ง  
+- สร้างกรอบการวิเคราะห์เพื่อสนับสนุนการตัดสินใจด้านการตลาดและการบริหารสินค้าคงคลัง  
+- ประเมินประสิทธิภาพของโมเดลด้วยตัวชี้วัด R² และ RMSE เพื่อหาโมเดลที่เหมาะสมที่สุด  
+
+---
+
+## 3. คำถามการวิจัยและสมมติฐาน (Research Questions & Hypotheses)
+
+### Research Questions
+
+1. ปัจจัยใดมีผลต่อยอดขายของหมวด Ornaments และ Other มากที่สุด  
+2. พฤติกรรมของผู้ซื้อ เช่น อายุ เพศ ประเทศ หรือช่วงวัน มีอิทธิพลต่อยอดขายหรือไม่  
+3. โมเดล Machine Learning สามารถทำนายยอดขายได้แม่นยำเพียงใด  
+4. สามารถนำผลลัพธ์ไปใช้กำหนดกลยุทธ์ด้านราคา การตลาด และการบริหารสต๊อกได้หรือไม่  
+
+### Hypotheses
+
+- H1: Shipping Charges และ Quantity มีความสัมพันธ์เชิงบวกกับ Total Sales  
+- H2: การใช้ Ridge Regression ร่วมกับ Polynomial Features จะช่วยเพิ่มความสามารถของโมเดลในการอธิบายความแปรปรวนของข้อมูล  
+
+---
+
+## 4. ชุดข้อมูลและตัวแปรที่ใช้ (Dataset & Features)
+
+- จำนวนแถวข้อมูล: 7,394  
+- จำนวนตัวแปรทั้งหมด: 15  
+- แหล่งที่มาของข้อมูล: https://www.kaggle.com/datasets/adarsh0806/influencer-merchandise-sales/data  
+
+### Data Dictionary
+
+| Attribute             | คำอธิบาย                        | Data Type               | ช่วงค่าที่ถูกต้อง / ตัวอย่าง                |
+|-----------------------|----------------------------------|-------------------------|----------------------------------------------|
+| Order ID              | หมายเลขคำสั่งซื้อ               | Ordinal                 | 189440                                       |
+| Order Date            | วันที่มีการสั่งซื้อ              | Interval (Date)         | 20/07/2024                                   |
+| Product ID            | หมายเลขสินค้า                   | Ordinal                 | BF1543, BF1544, BFXXXX                       |
+| Product Category      | หมวดหมู่สินค้า                  | Nominal                 | Clothing, Ornaments, Others                  |
+| Buyer Gender          | เพศของผู้ซื้อ                   | Nominal                 | Male, Female                                 |
+| Buyer Age             | อายุผู้ซื้อ                     | Ratio (Continuous)      | 18–100                                       |
+| Order Location        | สถานที่สั่งซื้อ                 | Nominal                 | Las Vegas, Sydney                            |
+| International Shipping| จัดส่งระหว่างประเทศหรือไม่     | Nominal (Binary)        | Yes / No                                     |
+| Sales Price           | ราคาสินค้า                      | Ratio (Continuous)      | 0–∞                                          |
+| Shipping Charges      | ค่าจัดส่งสินค้า                 | Ratio (Continuous)      | 0–∞                                          |
+| Sales per Unit        | ยอดขายต่อหน่วย                  | Ratio (Continuous)      | 0–∞                                          |
+| Quantity              | จำนวนสินค้าที่ซื้อ               | Ratio (Discrete)        | 1–∞                                          |
+| Total Sales           | ยอดขายรวม                       | Ratio (Continuous)      | 0–∞                                          |
+| Rating                | คะแนนรีวิว                      | Interval / Ordinal      | 1–5                                          |
+| Review                | รีวิวลูกค้า                     | Nominal (Text)          | “The product was delivered quickly.”         |
+
+### ตัวแปรเป้าหมาย (Target Variable)
+
+- Total Sales
+
+### ตัวแปรสำคัญที่ใช้วิเคราะห์ (Key Features)
+
+- Buyer Age  
+- Buyer Gender  
+- Shipping Charges  
+- Rating  
+- Product Category  
+- Order Date → Month, Quarter  
+- DayOfWeek, IsWeekend  
+- Quantity  
+
+---
+
+## 5. ระเบียบวิธีวิจัย (Methodology)
+
+### 5.1 Data Cleaning
+
+- ไม่มี Missing Values  
+- ไม่มี Duplicate Records  
+- ตรวจสอบและปรับรูปแบบวันที่ (Date Format) ให้เป็นชนิด datetime  
+
+### 5.2 Exploratory Data Analysis (EDA)
+
+- วิเคราะห์การกระจายตัวของยอดขาย (Distribution of Total Sales)  
+- วิเคราะห์แนวโน้มตามเวลา (Time Series Trend)  
+- ตรวจสอบความสัมพันธ์ด้วย Correlation Matrix  
+- วิเคราะห์พฤติกรรมผู้ซื้อแยกตาม Product Category  
+
+### 5.3 Feature Engineering
+
+- แปลง Order Date เป็นตัวแปร Month และ Quarter  
+- สร้าง DayOfWeek และ IsWeekend เพื่อแทนพฤติกรรมการซื้อในวันธรรมดาและวันหยุด  
+- สร้าง Polynomial Features (Degree = 2) เพื่อจับความสัมพันธ์แบบไม่เชิงเส้น (Nonlinear Relationship)  
+
+### 5.4 Machine Learning Modeling
+
+- โมเดลที่ใช้: Ridge Regression ร่วมกับ Polynomial Features  
+- เหตุผลการเลือก:
+  - Ridge Regression ช่วยลดปัญหา Multicollinearity ในตัวแปรอิสระ  
+  - Polynomial Features ช่วยให้โมเดลสามารถจับความสัมพันธ์ที่ไม่เป็นเส้นตรงระหว่างตัวแปรกับยอดขายได้ดีขึ้น  
+
+- ตัวชี้วัดที่ใช้ประเมิน (Evaluation Metrics):
+  - R² (Coefficient of Determination)  
+  - RMSE (Root Mean Squared Error)  
+
+---
+
+## 6. ผลลัพธ์ของโมเดล (Model Performance)
+
+### หมวด Ornaments
+
+| Metric    | Score   |
+|-----------|---------|
+| Train R²  | 0.3759  |
+| Test R²   | 0.3896  |
+| Train RMSE| 56.7367 |
+| Test RMSE | 61.2070 |
+
+### หมวด Other
+
+| Metric    | Score   |
+|-----------|---------|
+| Train R²  | 0.5610  |
+| Test R²   | 0.6046  |
+| Train RMSE| 39.6635 |
+| Test RMSE | 37.1657 |
+
+---
+
+## 7. ข้อค้นพบเชิงลึก (Findings & Insights)
+
+จากการทดลองพัฒนาโมเดลหลายรูปแบบ ได้แก่ Linear Regression, Polynomial Regression และโมเดลแบบ Regularization เช่น Ridge Regression พบว่า **Ridge Regression ที่ผสานกับ Polynomial Features** ให้ผลลัพธ์ที่มีความสมดุลที่สุดระหว่าง **ความซับซ้อนของโมเดล (Model Complexity)** และ **ความสามารถในการอธิบายข้อมูล (Explanatory Power)** พร้อมทั้งคงไว้ซึ่งระดับ **generalization ที่ดี** เมื่อทดสอบกับข้อมูลที่โมเดลไม่เคยเห็นมาก่อน (Test Set)
+
+แม้ความแม่นยำโดยรวมจะยังไม่สูงมาก แต่โมเดลสามารถอธิบายแนวโน้มและความสัมพันธ์เชิงธุรกิจได้อย่างมีประสิทธิภาพ โดยเฉพาะในหมวด **Other** ซึ่งมีข้อมูลที่เสถียรกว่าและมีสัญญาณ (signal) ชัดเจนมากกว่าหมวด Ornaments
+
+---
+
+### ประสิทธิภาพของโมเดลในแต่ละหมวดสินค้า
+
+#### หมวด Other — โมเดลมีความสามารถในการ Generalize ที่ดีกว่า
+- **Test R² = 0.6046**  
+  โมเดลสามารถอธิบายความแปรปรวนของยอดขายได้ประมาณ 60% ซึ่งถือว่าอยู่ในระดับปานกลางค่อนข้างดีสำหรับข้อมูลที่มีความผันผวนสูง
+- **RMSE = 37.17**  
+  ความคลาดเคลื่อนเฉลี่ยอยู่ในระดับที่ยอมรับได้สำหรับการประเมินแนวโน้มยอดขายในภาพรวม
+
+#### หมวด Ornaments — ข้อมูลมีความผันผวนสูง ทำให้โมเดลทำนายได้ยากกว่า
+- **R² = 0.3896**  
+  โมเดลอธิบายความแปรปรวนของยอดขายได้เพียงบางส่วน
+- **RMSE = 61.21**  
+  ค่าคลาดเคลื่อนสูง สะท้อนถึงรูปแบบยอดขายที่มีความไม่แน่นอนและยากต่อการพยากรณ์
+
+จากผลลัพธ์นี้สามารถสรุปได้ว่าหมวด Ornaments มีความผันผวนสูงกว่าอย่างชัดเจน และอาจเหมาะกับโมเดลที่มีความซับซ้อนมากขึ้น เช่น Tree-Based Models (Random Forest, XGBoost) หรือ Time Series Models
+
+---
+
+### ผลของการเพิ่ม Polynomial Features
+
+การเพิ่ม Polynomial Degree = 2 ทำให้โมเดลสามารถจับ **ความสัมพันธ์แบบไม่เชิงเส้น (non-linear patterns)** ได้ดีขึ้น เช่น
+- ค่าจัดส่งสูงเกิน threshold ทำให้ยอดขายลดลงทันที  
+- จำนวนสินค้าที่เพิ่มขึ้นส่งผลต่อยอดขายแบบโค้ง (diminishing returns)
+
+การเพิ่ม Polynomial Features ช่วยเพิ่มค่า R² ในทั้งสองหมวดสินค้า อย่างไรก็ตาม ความแม่นยำในการพยากรณ์เชิงตัวเลขยังอยู่ในระดับไม่สูงพอสำหรับการคาดการณ์แบบละเอียด จึงเหมาะกับการใช้เพื่อทำความเข้าใจโครงสร้างความสัมพันธ์ของข้อมูลมากกว่า
+
+---
+
+### บทบาทของ Ridge Regression ในคุณภาพของโมเดล
+
+ข้อมูลธุรกิจมักมีลักษณะ multicollinearity ระหว่างตัวแปร เช่น:
+- Sales Price, Quantity และ Shipping Charges  
+- Price ↔ Rating  
+- Quantity ↔ Total Sales (อาจเกิด target leakage หากไม่จัดการให้ดี)
+
+Ridge Regression ช่วยให้โมเดล:
+- มีความเสถียร (coefficient stability)  
+- ลดความแกว่งของค่าสัมประสิทธิ์  
+- ลดความเสี่ยง overfitting  
+- เพิ่มความสามารถในการ generalize เมื่อพบข้อมูลใหม่  
+
+ด้วยเหตุผลนี้ Ridge Regression จึงเหมาะสำหรับการใช้เพื่อ **อธิบายปัจจัยที่มีผลต่อยอดขาย (Interpretive Modeling)** แม้จะยังไม่ใช่โมเดลที่แม่นยำที่สุดสำหรับการพยากรณ์ยอดขายเชิงตัวเลขก็ตาม
+
+---
+
+### สรุปภาพรวม
+
+โมเดล Ridge Regression with Polynomial Features ช่วยให้เข้าใจปัจจัยที่มีผลต่อยอดขายได้ดีในระดับหนึ่ง โดยเฉพาะในหมวด Other ที่มีรูปแบบข้อมูลเสถียรและสอดคล้องกับโมเดลมากกว่า แม้ผลการพยากรณ์เชิงปริมาณจะยังไม่สูง แต่โมเดลนี้มีประโยชน์ต่อการวิเคราะห์เชิงกลยุทธ์ และสามารถต่อยอดไปยังโมเดลที่ซับซ้อนขึ้นเพื่อเพิ่มความแม่นยำได้ในอนาคต
+
+
+---
+
+## 8. ข้อเสนอเชิงกลยุทธ์ (Strategic Recommendations)
+
+### ด้านการตลาด (Marketing Strategy)
+
+- ทำ Targeted Campaign สำหรับลูกค้ากลุ่มอายุ 25–34 ปีที่เป็นกลุ่มกำลังซื้อหลัก  
+- ใช้โปรโมชั่นแบบ Bundle หรือ Multi-Buy เพื่อผลักดันหมวดสินค้าที่มียอดขายต่ำแต่มีศักยภาพเติบโต  
+
+### ด้านบริหารสินค้า (Inventory Strategy)
+
+- เพิ่มสต๊อกสินค้าในรหัสที่มียอดซื้อซ้ำสูง เช่น BF1551, BF1544 (ตัวอย่าง)  
+- ลดสต๊อกสินค้าที่มี Demand ต่ำและความผันผวนสูง  
+
+### ด้านธุรกิจระหว่างประเทศ (Regional Optimization)
+
+- ทำ Localized Promotion ตามลักษณะพฤติกรรมลูกค้าแต่ละประเทศ  
+- ใช้ข้อมูลยอดขายต่อภูมิภาคประกอบการวางแผนสต๊อกและการจัดส่ง  
+
+---
+
+## 9. เครื่องมือที่ใช้ (Tech Stack)
+
+- Python: pandas, numpy, matplotlib, seaborn  
+- scikit-learn  
+- Google Colab  
+- GitHub สำหรับ Version Control  
+
+---
+
+## 10. รายชื่อผู้จัดทำ (Contributors)
+
+- Pimwipa Leesongsak (68199160287)  
+- Poonyapa Sansupo (68199160283)
+
+---
