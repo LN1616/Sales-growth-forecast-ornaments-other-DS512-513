@@ -32,10 +32,6 @@
 4. โมเดล Machine Learning สามารถทำนายยอดขายได้แม่นยำเพียงใด  
 5. ผลลัพธ์จากการวิเคราะห์สามารถนำไปใช้สนับสนุนการตัดสินใจด้านการตลาดและการบริหารสินค้าคงคลังได้หรือไม่ 
 
-### Hypothesis
-
-- H1: Shipping Charges และ Quantity มีความสัมพันธ์เชิงบวกกับ Total Sales  
-- H2: การใช้ Ridge Regression ร่วมกับ Polynomial Features จะช่วยเพิ่มความสามารถของโมเดลในการอธิบายความแปรปรวนของข้อมูล  
 
 ---
 
@@ -75,13 +71,11 @@
 ### ตัวแปรสำคัญที่ใช้วิเคราะห์ (Key Features)
 
 - Buyer Age  
-- Buyer Gender  
 - Shipping Charges  
 - Rating  
-- Product Category  
 - Order Date → Month, Quarter  
-- DayOfWeek, IsWeekend  
-- Quantity  
+- DayOfWeek
+- IsWeekend  
 
 ---
 
